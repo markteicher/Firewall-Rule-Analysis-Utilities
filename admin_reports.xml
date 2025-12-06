@@ -1,0 +1,74 @@
+<dashboard version="1.1">
+  <label>Admin Reports</label>
+  <description>Monitor FireMon administrative report activity including usage patterns and configurations.</description>
+
+  <row>
+    <panel>
+      <title>Reports Executed Over Time</title>
+      <chart>
+        <search>
+          <query>
+            index=firemon sourcetype=firemon:admin_reports
+            | timechart span=1d count BY report_type
+          </query>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.axisTitleX.text">Date</option>
+        <option name="charting.axisTitleY.text">Executions</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Top Executed Reports</title>
+      <chart>
+        <search>
+          <query>
+            index=firemon sourcetype=firemon:admin_reports
+            | stats count BY report_name
+            | sort -count
+            | head 10
+          </query>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.axisTitleX.text">Report</option>
+        <option name="charting.axisTitleY.text">Executions</option>
+      </chart>
+    </panel>
+
+    <panel>
+      <title>Reports by Admin User</title>
+      <chart>
+        <search>
+          <query>
+            index=firemon sourcetype=firemon:admin_reports
+            | stats count BY user_id
+            | sort -count
+            | head 10
+          </query>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.axisTitleX.text">User ID</option>
+        <option name="charting.axisTitleY.text">Reports Run</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Recent Report Activity</title>
+      <table>
+        <search>
+          <query>
+            index=firemon sourcetype=firemon:admin_reports
+            | table _time, report_name, report_type, user_id, domain, status
+            | sort -_time
+          </query>
+        </search>
+        <option name="count">20</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>
