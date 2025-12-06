@@ -1,0 +1,69 @@
+<dashboard version="1.1">
+  <label>Admin Permissions</label>
+  <description>Analyze administrative permissions across domains, users, and roles.</description>
+
+  <row>
+    <panel>
+      <title>Permission Distribution by Role</title>
+      <chart>
+        <search>
+          <query>
+            index=firemon sourcetype=firemon:admin_permissions
+            | stats count BY role
+            | sort -count
+          </query>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+
+    <panel>
+      <title>Top Users by Number of Permissions</title>
+      <chart>
+        <search>
+          <query>
+            index=firemon sourcetype=firemon:admin_permissions
+            | stats count BY user_id
+            | sort -count
+            | head 10
+          </query>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.axisTitleX.text">User ID</option>
+        <option name="charting.axisTitleY.text">Permission Count</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Permission Assignments Over Time</title>
+      <chart>
+        <search>
+          <query>
+            index=firemon sourcetype=firemon:admin_permissions
+            | timechart count BY role
+          </query>
+        </search>
+        <option name="charting.chart">line</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Admin Permissions Table</title>
+      <table>
+        <search>
+          <query>
+            index=firemon sourcetype=firemon:admin_permissions
+            | table _time, user_id, role, permission, domain, resource
+            | sort -_time
+          </query>
+        </search>
+        <option name="count">20</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>
