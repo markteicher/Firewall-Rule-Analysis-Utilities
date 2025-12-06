@@ -1,0 +1,91 @@
+<dashboard version="1.1">
+<label>Devices Overview</label>
+<description>Summary of all managed devices, grouped by type, status, and vendor.</description>
+
+<row>
+<panel>
+<title>Total Managed Devices</title>
+<single>
+<search>
+<query>
+index=firemon sourcetype=firemon:devices
+| stats dc(device_id) AS total_devices
+</query>
+</search>
+<option name="field">total_devices</option>
+</single>
+</panel>
+<panel>
+<title>Devices by Status</title>
+<chart>
+<search>
+<query>
+index=firemon sourcetype=firemon:devices
+| stats count BY status
+</query>
+</search>
+<option name="charting.chart">pie</option>
+</chart>
+</panel>
+<panel>
+<title>Devices by Type</title>
+<chart>
+<search>
+<query>
+index=firemon sourcetype=firemon:devices
+| stats count BY device_type
+</query>
+</search>
+<option name="charting.chart">bar</option>
+<option name="charting.axisTitleX.visibility">visible</option>
+<option name="charting.axisTitleY.visibility">visible</option>
+</chart>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Devices by Vendor</title>
+<chart>
+<search>
+<query>
+index=firemon sourcetype=firemon:devices
+| stats count BY vendor
+| sort - count
+</query>
+</search>
+<option name="charting.chart">column</option>
+</chart>
+</panel>
+<panel>
+<title>Top 10 Devices by Policy Size</title>
+<table>
+<search>
+<query>
+index=firemon sourcetype=firemon:devices
+| table device_name, policy_size
+| sort - policy_size
+| head 10
+</query>
+</search>
+<option name="count">10</option>
+</table>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Device Inventory Table</title>
+<table>
+<search>
+<query>
+index=firemon sourcetype=firemon:devices
+| table device_id, device_name, ip_address, vendor, device_type, status, last_seen
+</query>
+</search>
+<option name="count">20</option>
+<option name="drilldown">row</option>
+</table>
+</panel>
+</row>
+</dashboard>
