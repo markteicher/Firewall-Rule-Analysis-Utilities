@@ -1,0 +1,75 @@
+<dashboard version="1.1">
+<label>Users Overview</label>
+<description>Overview of FireMon users, login activity, and user roles.</description>
+
+<row>
+<panel>
+<title>Active Users</title>
+<single>
+<search>
+<query>
+index=firemon sourcetype=firemon:users status=active
+| stats dc(user_id) AS active_users
+</query>
+</search>
+<option name="unit">users</option>
+</single>
+</panel>
+<panel>
+<title>Total Users</title>
+<single>
+<search>
+<query>
+index=firemon sourcetype=firemon:users
+| stats dc(user_id) AS total_users
+</query>
+</search>
+<option name="unit">users</option>
+</single>
+</panel>
+<panel>
+<title>Disabled Accounts</title>
+<single>
+<search>
+<query>
+index=firemon sourcetype=firemon:users status=disabled
+| stats dc(user_id) AS disabled_users
+</query>
+</search>
+<option name="unit">users</option>
+</single>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Recent User Login Activity</title>
+<table>
+<search>
+<query>
+index=firemon sourcetype=firemon:users
+| fields _time user_id username email last_login role
+| sort -last_login
+</query>
+</search>
+<option name="count">20</option>
+<option name="drilldown">row</option>
+</table>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>User Roles Distribution</title>
+<pie>
+<search>
+<query>
+index=firemon sourcetype=firemon:users
+| stats count by role
+| sort -count
+</query>
+</search>
+</pie>
+</panel>
+</row>
+</dashboard>
