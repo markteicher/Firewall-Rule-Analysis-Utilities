@@ -1,0 +1,49 @@
+<dashboard version="1.1">
+<label>Custom FireMon Report</label>
+<description>Flexible, analyst-driven dashboard for querying FireMon data with custom filters.</description>
+
+<row>
+<panel>
+<title>Custom Rule Violation Query</title>
+<input type="time" token="time_range">
+<label>Select Time Range</label>
+<default>
+<earliest>-7d@d</earliest>
+<latest>now</latest>
+</default>
+</input>
+<input type="text" token="src_ip_filter">
+<label>Source IP Filter</label>
+<default>*</default>
+</input>
+<input type="text" token="dest_ip_filter">
+<label>Destination IP Filter</label>
+<default>*</default>
+</input>
+<input type="text" token="rule_name_filter">
+<label>Rule Name Filter</label>
+<default>*</default>
+</input>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Query Results</title>
+<table>
+<search>
+<query>
+index=firemon sourcetype=firemon:rule_violations
+src_ip="$src_ip_filter$" dest_ip="$dest_ip_filter$" rule_name="$rule_name_filter$"
+| table _time device_name rule_name severity src_ip dest_ip protocol action
+| sort - _time
+</query>
+<earliest>$time_range.earliest$</earliest>
+<latest>$time_range.latest$</latest>
+</search>
+<option name="count">25</option>
+<option name="drilldown">row</option>
+</table>
+</panel>
+</row>
+</dashboard>
