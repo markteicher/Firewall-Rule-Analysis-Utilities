@@ -1,0 +1,52 @@
+<dashboard version="1.1">
+<label>Risk Exposure Overview</label>
+<description>Visual summary of current firewall policy risk exposure and threat indicators across environments.</description>
+
+<row>
+<panel>
+<title>Risk Scores by Device</title>
+<chart>
+<search>
+<query>index=firemon sourcetype=firemon:risk | stats avg(risk_score) as avg_risk by device_name</query>
+</search>
+<option name="charting.chart">bar</option>
+<option name="charting.legend.placement">none</option>
+<option name="charting.axisTitleX.text">Device</option>
+<option name="charting.axisTitleY.text">Average Risk Score</option>
+</chart>
+</panel>
+<panel>
+<title>Top Risky Rules</title>
+<table>
+<search>
+<query>index=firemon sourcetype=firemon:risk | sort - risk_score | table rule_id, rule_name, device_name, risk_score, risk_type, source_zone, destination_zone limit=10</query>
+</search>
+<option name="count">10</option>
+</table>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Risk Type Distribution</title>
+<pie>
+<search>
+<query>index=firemon sourcetype=firemon:risk | stats count by risk_type</query>
+</search>
+<option name="charting.chart">pie</option>
+<option name="charting.legend.placement">right</option>
+</pie>
+</panel>
+<panel>
+<title>Risk Trend Over Time</title>
+<chart>
+<search>
+<query>index=firemon sourcetype=firemon:risk | timechart avg(risk_score) as avg_risk by device_name</query>
+</search>
+<option name="charting.chart">line</option>
+<option name="charting.axisTitleX.text">Time</option>
+<option name="charting.axisTitleY.text">Average Risk Score</option>
+</chart>
+</panel>
+</row>
+</dashboard>
