@@ -1,0 +1,37 @@
+FIREMON SPLUNK APP – CHANGELOG
+==============================
+
+v1.0.0 – Initial Release
+------------------------
+🎯 Major Features:
+- Integrated FireMon Security Manager API using fully embedded SDK
+- Included all modules: analytics, auth, client, config, devices, policy, reports, rules, services, users, utils
+- Modular input script (firemon_input.py) with full setup via `inputs.conf` + `restmap.conf`
+- UI-based configuration using `setup.xml` for API URL/token
+- 24 prebuilt dashboards covering:
+- Policy compliance
+- Risk exposure
+- Rule analysis
+- Change tracking
+- Inventory and normalization
+- Authentication, users, groups, and domain-level insights
+- Admin reporting and system health
+
+📁 Structure:
+- Packaged to Splunk App Builder spec with correct `default/`, `bin/`, `metadata/`, `dashboards/`, `README/`, `static/`, and `appserver/static/` directories
+- Icons and logos: `appLogo.png`, `appLogo_2x.png`, `appIconAlt.png`, `appIconAlt_2x.png`
+
+📊 Saved Searches:
+- Defined for use in dashboards and alerting
+- All included in `savedsearches.conf`
+
+🔒 Permissions:
+- Configured via `default.meta` to allow role-based dashboard access
+
+📜 Other:
+- App manifest included (`manifest.json`)
+- README and this changelog file added
+
+🧪 Status:
+- App fully functional and ready for deployment/testing
+- All wiring complete, inline dashboards and logic provided
