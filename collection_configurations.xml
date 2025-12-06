@@ -1,0 +1,66 @@
+<dashboard version="1.1">
+<label>Collection Configurations</label>
+<description>View current data collection configurations, frequencies, and associated devices.</description>
+
+<row>
+<panel>
+<title>Collection Methods by Type</title>
+<chart>
+<search>
+<query>
+index=firemon sourcetype=firemon:collection
+| stats count BY collection_type
+</query>
+</search>
+<option name="charting.chart">pie</option>
+<option name="charting.legend.placement">right</option>
+</chart>
+</panel>
+<panel>
+<title>Top Devices by Collection Frequency</title>
+<table>
+<search>
+<query>
+index=firemon sourcetype=firemon:collection
+| stats values(collection_frequency) AS frequency BY device_name
+| sort device_name
+</query>
+</search>
+<option name="count">10</option>
+</table>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Collection Configuration Timeline</title>
+<chart>
+<search>
+<query>
+index=firemon sourcetype=firemon:collection
+| timechart count BY collection_type
+</query>
+</search>
+<option name="charting.chart">line</option>
+<option name="charting.axisTitleX.text">Time</option>
+<option name="charting.axisTitleY.text">Collection Events</option>
+</chart>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Detailed Collection Configurations</title>
+<table>
+<search>
+<query>
+index=firemon sourcetype=firemon:collection
+| table _time, device_name, collection_type, collection_frequency, collector_status, last_run_time
+| sort -_time
+</query>
+</search>
+<option name="count">20</option>
+</table>
+</panel>
+</row>
+</dashboard>
