@@ -1,0 +1,40 @@
+<dashboard version="1.1">
+<label>Unused Firewall Rules Report</label>
+<description>Identify firewall rules that have not been used over a specified time range, to assist in cleanup and optimization efforts.</description>
+
+<row>
+<panel>
+<title>Top Unused Rules by Device</title>
+<table>
+<search>
+<query>index=firemon sourcetype=firemon:rules usage_count=0 | stats count as unused_rules by device_name | sort - unused_rules</query>
+</search>
+<option name="count">10</option>
+</table>
+</panel>
+
+<panel>
+<title>Unused Rule Breakdown</title>
+<chart>
+<search>
+<query>index=firemon sourcetype=firemon:rules usage_count=0 | stats count by rule_type</query>
+</search>
+<option name="charting.chart">pie</option>
+<option name="charting.legend.placement">right</option>
+</chart>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Full List of Unused Rules</title>
+<table>
+<search>
+<query>index=firemon sourcetype=firemon:rules usage_count=0 | table device_name, rule_id, rule_name, rule_type, source_zone, destination_zone, created_by, created_time</query>
+</search>
+<option name="count">20</option>
+<option name="drilldown">row</option>
+</table>
+</panel>
+</row>
+</dashboard>
