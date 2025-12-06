@@ -1,5 +1,3 @@
-# Firewall-Rule-Analysis-Utilities
-
 FIREMON SPLUNK APP
 ===================
 
