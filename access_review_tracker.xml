@@ -1,0 +1,52 @@
+<dashboard version="1.1">
+<label>Access Review Tracker</label>
+<description>Monitor and manage access review status for rules tied to users, groups, and service accounts.</description>
+
+<row>
+<panel>
+<title>Access Rules by User or Group</title>
+<table>
+<search>
+<query>index=firemon sourcetype=firemon:rules user_identity=* OR group_identity=* | table device_name, rule_id, rule_name, user_identity, group_identity, last_reviewed, review_status</query>
+</search>
+<option name="count">15</option>
+<option name="drilldown">row</option>
+</table>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Review Status Distribution</title>
+<chart>
+<search>
+<query>index=firemon sourcetype=firemon:rules | stats count by review_status</query>
+</search>
+<option name="charting.chart">pie</option>
+<option name="charting.legend.placement">bottom</option>
+</chart>
+</panel>
+
+<panel>
+<title>Overdue Reviews by Device</title>
+<table>
+<search>
+<query>index=firemon sourcetype=firemon:rules review_status="Overdue" | stats count by device_name</query>
+</search>
+<option name="count">10</option>
+</table>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Upcoming Review Deadlines (Next 30 Days)</title>
+<table>
+<search>
+<query>index=firemon sourcetype=firemon:rules | eval review_due=strptime(review_due_date, "%Y-%m-%d") | where review_due &lt;= relative_time(now(), "+30d") AND review_status!="Completed" | table device_name, rule_id, rule_name, user_identity, group_identity, review_due_date, review_status</query>
+</search>
+<option name="count">15</option>
+</table>
+</panel>
+</row>
+</dashboard>
