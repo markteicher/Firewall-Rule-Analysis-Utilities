@@ -1,0 +1,31 @@
+<nav version="1.1">
+<view name="firewall_policy_analysis" default="true" label="Firewall Policy Analysis" />
+<view name="compliance_summary" label="Compliance Summary" />
+<view name="risk_exposure_overview" label="Risk Exposure Overview" />
+<view name="unused_rules_report" label="Unused Rules Report" />
+<view name="rule_cleanup_opportunities" label="Rule Cleanup Opportunities" />
+<view name="access_review_tracker" label="Access Review Tracker" />
+<view name="device_inventory_status" label="Device Inventory Status" />
+<view name="change_event_timeline" label="Change Event Timeline" />
+<view name="top_rule_violators" label="Top Rule Violators" />
+<view name="custom_firemon_report" label="Custom FireMon Report" />
+<collection label="Users & Identity">
+<view name="users_overview" label="Users Overview" />
+<view name="user_groups" label="User Groups" />
+<view name="authentication_servers" label="Authentication Servers" />
+</collection>
+<collection label="Device Management">
+<view name="devices_overview" label="Devices Overview" />
+<view name="device_groups" label="Device Groups" />
+<view name="normalization_status" label="Normalization Status" />
+<view name="collection_configurations" label="Collection Configurations" />
+</collection>
+<collection label="Admin Views">
+<view name="license_status" label="License Status" />
+<view name="admin_domains" label="Admin Domains" />
+<view name="admin_permissions" label="Admin Permissions" />
+<view name="admin_reports" label="Admin Reports" />
+<view name="admin_services" label="Admin Services" />
+<view name="admin_zones" label="Admin Zones" />
+</collection>
+</nav>
