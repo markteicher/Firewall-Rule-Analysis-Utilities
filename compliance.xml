@@ -1,0 +1,60 @@
+<dashboard version="1.1">
+<label>Compliance Summary</label>
+<description>Overview of firewall policy compliance based on defined control frameworks.</description>
+
+<row>
+<panel>
+<title>Compliance Status by Device</title>
+<chart>
+<search>
+<query>index=firemon sourcetype=firemon:compliance | stats count by device_name, compliance_status</query>
+</search>
+<option name="charting.chart">column</option>
+<option name="charting.legend.placement">bottom</option>
+<option name="charting.axisTitleX.text">Device</option>
+<option name="charting.axisTitleY.text">Compliance Checks</option>
+</chart>
+</panel>
+<panel>
+<title>Overall Compliance Pass Rate</title>
+<single>
+<search>
+<query>
+index=firemon sourcetype=firemon:compliance
+| eventstats count as total
+| search compliance_status="pass"
+| stats count as passed
+| eval pass_rate=round((passed/total)*100,2)
+| fields pass_rate
+</query>
+</search>
+<option name="colorMode">block</option>
+<option name="numberPrecision">1</option>
+<option name="unit">%</option>
+</single>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Failed Controls by Framework</title>
+<chart>
+<search>
+<query>index=firemon sourcetype=firemon:compliance compliance_status="fail" | stats count by control_framework</query>
+</search>
+<option name="charting.chart">bar</option>
+<option name="charting.axisTitleX.text">Framework</option>
+<option name="charting.axisTitleY.text">Failed Checks</option>
+</chart>
+</panel>
+<panel>
+<title>Top Non-Compliant Rules</title>
+<table>
+<search>
+<query>index=firemon sourcetype=firemon:compliance compliance_status="fail" | top rule_name limit=10</query>
+</search>
+<option name="count">10</option>
+</table>
+</panel>
+</row>
+</dashboard>
