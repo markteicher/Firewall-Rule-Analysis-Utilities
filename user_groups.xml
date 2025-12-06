@@ -1,0 +1,64 @@
+<dashboard version="1.1">
+<label>User Groups</label>
+<description>Displays FireMon user groups, member counts, and group roles.</description>
+
+<row>
+<panel>
+<title>Total User Groups</title>
+<single>
+<search>
+<query>
+index=firemon sourcetype=firemon:user_groups
+| stats dc(group_id) AS total_groups
+</query>
+</search>
+<option name="unit">groups</option>
+</single>
+</panel>
+<panel>
+<title>Groups With No Members</title>
+<single>
+<search>
+<query>
+index=firemon sourcetype=firemon:user_groups
+| where mvcount(members) = 0
+| stats count AS empty_groups
+</query>
+</search>
+<option name="unit">groups</option>
+</single>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Group Member Counts</title>
+<table>
+<search>
+<query>
+index=firemon sourcetype=firemon:user_groups
+| eval member_count = mvcount(members)
+| table group_name, member_count, role
+| sort -member_count
+</query>
+</search>
+<option name="count">15</option>
+<option name="drilldown">row</option>
+</table>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>User Group Role Distribution</title>
+<pie>
+<search>
+<query>
+index=firemon sourcetype=firemon:user_groups
+| stats count by role
+</query>
+</search>
+</pie>
+</panel>
+</row>
+</dashboard>
