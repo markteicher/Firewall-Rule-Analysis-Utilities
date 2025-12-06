@@ -1,0 +1,66 @@
+<dashboard version="1.1">
+<label>Admin Domains</label>
+<description>Displays administrative domains and their associated configurations and user assignments.</description>
+
+<row>
+<panel>
+<title>Admin Domains by Type</title>
+<chart>
+<search>
+<query>
+index=firemon sourcetype=firemon:admin_domains
+| stats count BY domain_type
+</query>
+</search>
+<option name="charting.chart">pie</option>
+<option name="charting.legend.placement">right</option>
+</chart>
+</panel>
+<panel>
+<title>User Count by Admin Domain</title>
+<chart>
+<search>
+<query>
+index=firemon sourcetype=firemon:admin_domains
+| stats dc(user_id) AS "User Count" BY domain_name
+| sort - "User Count"
+</query>
+</search>
+<option name="charting.chart">column</option>
+</chart>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Admin Domain Activity Over Time</title>
+<chart>
+<search>
+<query>
+index=firemon sourcetype=firemon:admin_domains
+| timechart count BY domain_name
+</query>
+</search>
+<option name="charting.chart">line</option>
+<option name="charting.axisTitleX.text">Time</option>
+<option name="charting.axisTitleY.text">Domain Events</option>
+</chart>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Admin Domain Details</title>
+<table>
+<search>
+<query>
+index=firemon sourcetype=firemon:admin_domains
+| table _time, domain_id, domain_name, domain_type, user_id, user_role
+| sort -_time
+</query>
+</search>
+<option name="count">20</option>
+</table>
+</panel>
+</row>
+</dashboard>
