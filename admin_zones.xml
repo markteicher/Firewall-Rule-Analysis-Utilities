@@ -1,0 +1,74 @@
+<dashboard version="1.1">
+  <label>Admin Zones</label>
+  <description>Monitor administrative actions and configuration changes related to FireMon zones.</description>
+
+  <row>
+    <panel>
+      <title>Zone Changes Over Time</title>
+      <chart>
+        <search>
+          <query>
+            index=firemon sourcetype=firemon:admin_zones
+            | timechart span=1d count BY action
+          </query>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.axisTitleX.text">Time</option>
+        <option name="charting.axisTitleY.text">Action Count</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Top Modified Zones</title>
+      <chart>
+        <search>
+          <query>
+            index=firemon sourcetype=firemon:admin_zones
+            | stats count BY zone_name
+            | sort -count
+            | head 10
+          </query>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.axisTitleX.text">Zone</option>
+        <option name="charting.axisTitleY.text">Modifications</option>
+      </chart>
+    </panel>
+
+    <panel>
+      <title>Zone Changes by Admin</title>
+      <chart>
+        <search>
+          <query>
+            index=firemon sourcetype=firemon:admin_zones
+            | stats count BY user_id
+            | sort -count
+            | head 10
+          </query>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.axisTitleX.text">User ID</option>
+        <option name="charting.axisTitleY.text">Changes</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Recent Zone Administration Events</title>
+      <table>
+        <search>
+          <query>
+            index=firemon sourcetype=firemon:admin_zones
+            | table _time, zone_name, action, user_id, domain, status
+            | sort -_time
+          </query>
+        </search>
+        <option name="count">20</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>
