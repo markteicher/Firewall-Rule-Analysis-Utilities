@@ -1,0 +1,74 @@
+<dashboard version="1.1">
+  <label>Admin Services</label>
+  <description>Track administrative actions and configurations related to FireMon services.</description>
+
+  <row>
+    <panel>
+      <title>Service Events Over Time</title>
+      <chart>
+        <search>
+          <query>
+            index=firemon sourcetype=firemon:admin_services
+            | timechart span=1d count BY service_action
+          </query>
+        </search>
+        <option name="charting.chart">line</option>
+        <option name="charting.axisTitleX.text">Date</option>
+        <option name="charting.axisTitleY.text">Action Count</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Top Modified Services</title>
+      <chart>
+        <search>
+          <query>
+            index=firemon sourcetype=firemon:admin_services
+            | stats count BY service_name
+            | sort -count
+            | head 10
+          </query>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.axisTitleX.text">Service</option>
+        <option name="charting.axisTitleY.text">Modifications</option>
+      </chart>
+    </panel>
+
+    <panel>
+      <title>Service Changes by Admin</title>
+      <chart>
+        <search>
+          <query>
+            index=firemon sourcetype=firemon:admin_services
+            | stats count BY user_id
+            | sort -count
+            | head 10
+          </query>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.axisTitleX.text">User ID</option>
+        <option name="charting.axisTitleY.text">Actions</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Recent Service Admin Events</title>
+      <table>
+        <search>
+          <query>
+            index=firemon sourcetype=firemon:admin_services
+            | table _time, service_name, service_action, user_id, domain, status
+            | sort -_time
+          </query>
+        </search>
+        <option name="count">20</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>
