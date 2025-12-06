@@ -1,0 +1,79 @@
+<dashboard version="1.1">
+<label>Device Groups</label>
+<description>Overview of device groups, their assigned devices, and usage insights.</description>
+
+<row>
+<panel>
+<title>Total Device Groups</title>
+<single>
+<search>
+<query>
+index=firemon sourcetype=firemon:device_groups
+| stats dc(group_id) AS total_groups
+</query>
+</search>
+<option name="field">total_groups</option>
+</single>
+</panel>
+<panel>
+<title>Devices per Group</title>
+<chart>
+<search>
+<query>
+index=firemon sourcetype=firemon:device_groups
+| stats count BY group_name
+| sort - count
+</query>
+</search>
+<option name="charting.chart">bar</option>
+<option name="charting.axisTitleX.text">Group Name</option>
+<option name="charting.axisTitleY.text">Device Count</option>
+</chart>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Top 10 Largest Groups</title>
+<table>
+<search>
+<query>
+index=firemon sourcetype=firemon:device_groups
+| stats count AS device_count BY group_name
+| sort - device_count
+| head 10
+</query>
+</search>
+<option name="count">10</option>
+<option name="drilldown">row</option>
+</table>
+</panel>
+<panel>
+<title>Devices by Group Type</title>
+<chart>
+<search>
+<query>
+index=firemon sourcetype=firemon:device_groups
+| stats count BY group_type
+</query>
+</search>
+<option name="charting.chart">pie</option>
+</chart>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Device Group Inventory</title>
+<table>
+<search>
+<query>
+index=firemon sourcetype=firemon:device_groups
+| table group_id, group_name, group_type, device_count, last_updated
+</query>
+</search>
+<option name="count">20</option>
+</table>
+</panel>
+</row>
+</dashboard>
