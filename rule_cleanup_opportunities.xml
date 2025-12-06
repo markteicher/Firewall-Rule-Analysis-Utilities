@@ -1,0 +1,53 @@
+<dashboard version="1.1">
+<label>Rule Cleanup Opportunities</label>
+<description>Highlight firewall rules that are candidates for cleanup based on shadowing, complexity, and inactivity.</description>
+
+<row>
+<panel>
+<title>Rules Shadowed by Others</title>
+<table>
+<search>
+<query>index=firemon sourcetype=firemon:rules shadowed_by!=null | table device_name, rule_id, rule_name, shadowed_by, hit_count, last_hit_date</query>
+</search>
+<option name="count">10</option>
+<option name="drilldown">row</option>
+</table>
+</panel>
+
+<panel>
+<title>High Complexity Rules</title>
+<table>
+<search>
+<query>index=firemon sourcetype=firemon:rules complexity_score&gt;=8 | table device_name, rule_id, rule_name, complexity_score, rule_type, created_by</query>
+</search>
+<option name="count">10</option>
+</table>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Rules with Low or No Usage</title>
+<chart>
+<search>
+<query>index=firemon sourcetype=firemon:rules | eval usage=if(hit_count==0,"Unused",if(hit_count&lt;10,"Low Usage","Active")) | stats count by usage</query>
+</search>
+<option name="charting.chart">column</option>
+<option name="charting.legend.placement">right</option>
+</chart>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Candidate Rules for Cleanup</title>
+<table>
+<search>
+<query>index=firemon sourcetype=firemon:rules (shadowed_by!=null OR hit_count&lt;=5 OR complexity_score&gt;=8) | table device_name, rule_id, rule_name, shadowed_by, hit_count, complexity_score, last_hit_date</query>
+</search>
+<option name="count">20</option>
+<option name="drilldown">row</option>
+</table>
+</panel>
+</row>
+</dashboard>
