@@ -1,0 +1,88 @@
+<dashboard version="1.1">
+<label>License Status</label>
+<description>Overview of FireMon license usage, limits, and expiration details.</description>
+
+<row>
+<panel>
+<title>License Expiration Date</title>
+<single>
+<search>
+<query>
+index=firemon sourcetype=firemon:license
+| stats latest(expiration_date) AS expiration
+</query>
+</search>
+<option name="field">expiration</option>
+</single>
+</panel>
+<panel>
+<title>Total Licensed Devices</title>
+<single>
+<search>
+<query>
+index=firemon sourcetype=firemon:license
+| stats latest(device_limit) AS licensed_devices
+</query>
+</search>
+<option name="unit">devices</option>
+</single>
+</panel>
+<panel>
+<title>Devices In Use</title>
+<single>
+<search>
+<query>
+index=firemon sourcetype=firemon:license
+| stats latest(devices_in_use) AS devices_used
+</query>
+</search>
+<option name="unit">devices</option>
+</single>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>License Utilization (%)</title>
+<single>
+<search>
+<query>
+index=firemon sourcetype=firemon:license
+| stats latest(devices_in_use) AS used, latest(device_limit) AS limit
+| eval utilization_pct = round((used/limit)*100, 2)
+</query>
+</search>
+<option name="unit">%</option>
+<option name="field">utilization_pct</option>
+</single>
+</panel>
+<panel>
+<title>License Status</title>
+<single>
+<search>
+<query>
+index=firemon sourcetype=firemon:license
+| stats latest(status) AS license_status
+</query>
+</search>
+<option name="field">license_status</option>
+</single>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>License Detail Table</title>
+<table>
+<search>
+<query>
+index=firemon sourcetype=firemon:license
+| table license_id, expiration_date, device_limit, devices_in_use, status, issued_to
+| sort expiration_date
+</query>
+</search>
+<option name="count">10</option>
+</table>
+</panel>
+</row>
+</dashboard>
