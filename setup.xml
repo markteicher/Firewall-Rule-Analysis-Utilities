@@ -1,0 +1,38 @@
+<setup>
+<block title="FireMon API Configuration">
+<text>Configure connection to FireMon Security Manager API</text>
+
+<input field="firemon_host" label="FireMon API Host">
+<default>https://your-firemon-server/api</default>
+<type>text</type>
+<required>true</required>
+</input>
+
+<input field="api_key" label="API Key">
+<type>password</type>
+<required>true</required>
+</input>
+
+<input field="verify_ssl" label="Verify SSL Certificates">
+<type>bool</type>
+<default>true</default>
+<required>true</required>
+</input>
+
+<input field="proxy_enabled" label="Enable Proxy">
+<type>bool</type>
+<default>false</default>
+</input>
+
+<input field="proxy_url" label="Proxy URL">
+<type>text</type>
+<required>false</required>
+</input>
+
+<input field="polling_interval" label="Polling Interval (seconds)">
+<type>text</type>
+<default>300</default>
+<required>true</required>
+</input>
+</block>
+</setup>
