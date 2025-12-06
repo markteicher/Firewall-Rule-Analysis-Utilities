@@ -1,0 +1,41 @@
+<dashboard version="1.1">
+<label>Top Rule Violators</label>
+<description>Identify the most frequently triggered or violated firewall rules across your environment.</description>
+
+<row>
+<panel>
+<title>Top Violated Rules</title>
+<chart>
+<search>
+<query>
+index=firemon sourcetype=firemon:rule_violations
+| stats count by rule_name
+| sort - count
+| head 10
+</query>
+</search>
+<option name="charting.chart">bar</option>
+<option name="charting.axisTitleX.text">Rule Name</option>
+<option name="charting.axisTitleY.text">Violation Count</option>
+<option name="charting.legend.placement">none</option>
+</chart>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Violation Details</title>
+<table>
+<search>
+<query>
+index=firemon sourcetype=firemon:rule_violations
+| table _time device_name rule_name severity src_ip dest_ip protocol action
+| sort - _time
+</query>
+</search>
+<option name="count">20</option>
+<option name="drilldown">row</option>
+</table>
+</panel>
+</row>
+</dashboard>
