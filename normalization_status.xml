@@ -1,0 +1,82 @@
+<dashboard version="1.1">
+<label>Normalization Status</label>
+<description>Monitor the status of policy and log normalization across devices and domains.</description>
+
+<row>
+<panel>
+<title>Normalization Success Rate</title>
+<single>
+<search>
+<query>
+index=firemon sourcetype=firemon:normalization
+| stats count(eval(status="success")) AS success count AS total
+| eval success_rate = round((success/total)*100, 2)
+</query>
+</search>
+<option name="field">success_rate</option>
+<option name="afterLabel">%</option>
+</single>
+</panel>
+<panel>
+<title>Normalization Failures Over Time</title>
+<chart>
+<search>
+<query>
+index=firemon sourcetype=firemon:normalization status=failure
+| timechart count BY failure_reason
+</query>
+</search>
+<option name="charting.chart">line</option>
+</chart>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Top Devices with Normalization Failures</title>
+<table>
+<search>
+<query>
+index=firemon sourcetype=firemon:normalization status=failure
+| stats count AS failures BY device_name
+| sort -failures
+| head 10
+</query>
+</search>
+<option name="count">10</option>
+<option name="drilldown">row</option>
+</table>
+</panel>
+<panel>
+<title>Normalization Status by Device</title>
+<chart>
+<search>
+<query>
+index=firemon sourcetype=firemon:normalization
+| stats count BY device_name, status
+| xyseries device_name status count
+</query>
+</search>
+<option name="charting.chart">bar</option>
+<option name="charting.axisTitleX.text">Device</option>
+<option name="charting.axisTitleY.text">Event Count</option>
+</chart>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Detailed Normalization Events</title>
+<table>
+<search>
+<query>
+index=firemon sourcetype=firemon:normalization
+| table _time, device_name, domain_name, status, failure_reason, normalized_type
+| sort -_time
+</query>
+</search>
+<option name="count">20</option>
+</table>
+</panel>
+</row>
+</dashboard>
