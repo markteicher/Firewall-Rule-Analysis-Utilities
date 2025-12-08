@@ -1,4 +1,4 @@
-FIREMON SPLUNK APP
+FIREMON Splunk App
 ===================
 
 Overview
