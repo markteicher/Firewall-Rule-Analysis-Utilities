@@ -1,50 +1,39 @@
 <dashboard version="1.1">
-<label>Services Overview</label>
-<description>Displays all FireMon services and full field details.</description>
+<label>FireMon Services</label>
 
-<!-- Row 1: Summary Chart -->
-<row>
-<panel>
-<chart>
-<title>Service Count by Group Status</title>
-<search>
-<query>
-index=firemon sourcetype=firemon:services
-| stats count by service_group, status
-</query>
-</search>
-<option name="charting.chart">bar</option>
-<option name="charting.legend.placement">right</option>
-</chart>
-</panel>
-</row>
-
-<!-- Row 2: Detailed Table -->
-<row>
-<panel>
-<table>
-<title>All Services</title>
-<search>
-<query>
-index=firemon sourcetype=firemon:services
-| table service_id, service_name, description, status, service_group, criticality, owner, created_date, modified_date, last_audit_date, tags
-</query>
-</search>
-<option name="drilldown">cell</option>
-</table>
-</panel>
-</row>
-
-<!-- Row 3: FireMon branding -->
 <row>
 <panel>
 <html>
 <![CDATA[
-<div style="text-align:right;">
-<img src="/static/appLogo.png" alt="FireMon Logo" width="160" height="40"/>
+<div style="display:flex; justify-content: space-between; align-items:center;">
+<h2>Services List</h2>
+<img src="/static/appLogo.png" style="height:40px;" alt="FireMon Logo"/>
 </div>
 ]]>
 </html>
+</panel>
+</row>
+
+<row>
+<panel>
+<table>
+<search>
+<query>| firemon_services</query>
+<earliest>-24h@h</earliest>
+<latest>now</latest>
+</search>
+<fieldColumn name="Name"/>
+<fieldColumn name="Description"/>
+<fieldColumn name="Vulnerability"/>
+<fieldColumn name="Default_Risk"/>
+<fieldColumn name="Protocol"/>
+<fieldColumn name="Protocol_Number"/>
+<fieldColumn name="Port"/>
+<fieldColumn name="Port_End"/>
+<fieldColumn name="ICMP_Type"/>
+<fieldColumn name="ICMP_Code"/>
+<fieldColumn name="Action"/>
+</table>
 </panel>
 </row>
 </dashboard>
