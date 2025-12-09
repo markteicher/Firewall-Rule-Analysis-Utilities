@@ -1,0 +1,40 @@
+{
+  "id": "firemon_splunk_app",
+  "version": "1.0.0",
+  "author": "Mark Teicher",
+  "description": "Splunk App for FireMon Firewall Rule Analysis, Device Management, Policy Compliance, and Risk Overview.",
+  "url": "https://github.com/markteicher/Firewall-Rule-Analysis-Utilities",
+  "icon": "appserver/static/appLogo.png",
+  "is_visible": true,
+  "support": {
+    "email": "support@example.com",
+    "url": "https://github.com/markteicher/Firewall-Rule-Analysis-Utilities/issues"
+  },
+  "release_notes": "Initial release of FireMon Splunk App with dashboards, API integration, and reporting.",
+  "splunk_version": {
+    "min": "8.2.0",
+    "max": "9.9.9"
+  },
+  "dependencies": [
+    {
+      "app": "search",
+      "version": "8.2.0"
+    }
+  ],
+  "permissions": {
+    "read": ["admin", "power", "user"],
+    "write": ["admin", "power"]
+  },
+  "directories": {
+    "appserver": "appserver",
+    "bin": "bin",
+    "dashboards": "dashboards",
+    "default": "default",
+    "metadata": "metadata",
+    "static": "static",
+    "local": "local",
+    "README": "README"
+  },
+  "tags": ["firewall", "firemon", "compliance", "risk", "network", "security"],
+  "license": "MIT"
+}
