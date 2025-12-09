@@ -1,14 +1,16 @@
 <dashboard version="1.1">
 <label>Services Overview</label>
-<description>Displays all FireMon Services.</description>
+<description>Displays all FireMon services and full field details.</description>
+
+<!-- Row 1: Summary Chart -->
 <row>
 <panel>
 <chart>
-<title>Service Summary</title>
+<title>Service Count by Group Status</title>
 <search>
 <query>
 index=firemon sourcetype=firemon:services
-| stats count by service_name, service_group
+| stats count by service_group, status
 </query>
 </search>
 <option name="charting.chart">bar</option>
@@ -16,6 +18,8 @@ index=firemon sourcetype=firemon:services
 </chart>
 </panel>
 </row>
+
+<!-- Row 2: Detailed Table -->
 <row>
 <panel>
 <table>
@@ -23,15 +27,17 @@ index=firemon sourcetype=firemon:services
 <search>
 <query>
 index=firemon sourcetype=firemon:services
-| table service_name, service_group, description, status
+| table service_id, service_name, description, status, service_group, criticality, owner, created_date, modified_date, last_audit_date, tags
 </query>
 </search>
+<option name="drilldown">cell</option>
 </table>
 </panel>
 </row>
+
+<!-- Row 3: FireMon branding -->
 <row>
 <panel>
-<!-- FireMon branding logo on far right -->
 <html>
 <![CDATA[
 <div style="text-align:right;">
