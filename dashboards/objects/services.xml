@@ -1,1 +1,48 @@
+<dashboard version="1.1">
+<label>Services Overview</label>
+<description>Overview of all FireMon services with status and metrics.</description>
 
+<!-- FireMon Branding -->
+<fieldset>
+<html>
+<![CDATA[
+<div style="text-align:right;">
+<img src="/static/appLogo.png" alt="FireMon Logo" width="160" height="40">
+</div>
+]]>
+</html>
+</fieldset>
+
+<!-- Panels -->
+<row>
+<panel>
+<title>Service Status</title>
+<chart>
+<search>
+<query>index=firemon sourcetype=firemon_service_status | stats count by status</query>
+</search>
+<option name="charting.chart">pie</option>
+</chart>
+</panel>
+
+<panel>
+<title>Top Active Services</title>
+<table>
+<search>
+<query>index=firemon sourcetype=firemon_services | top service_name limit=10</query>
+</search>
+</table>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Service Alerts</title>
+<table>
+<search>
+<query>index=firemon sourcetype=firemon_service_alerts | table _time, service_name, severity, message</query>
+</search>
+</table>
+</panel>
+</row>
+</dashboard>
