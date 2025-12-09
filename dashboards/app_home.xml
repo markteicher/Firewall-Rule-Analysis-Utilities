@@ -1,0 +1,65 @@
+<dashboard>
+    <label>Firemon_Splunk_App_Home</label>
+    <row>
+        <panel>
+            <title>Admin Overview</title>
+            <table>
+                <search>
+                    <query>index=firemon_admin sourcetype=users OR sourcetype=user_groups</query>
+                </search>
+            </table>
+        </panel>
+        <panel>
+            <title>Devices Overview</title>
+            <table>
+                <search>
+                    <query>index=firemon_devices sourcetype=devices OR sourcetype=device_groups</query>
+                </search>
+            </table>
+        </panel>
+    </row>
+    <row>
+        <panel>
+            <title>Policy Analysis</title>
+            <chart>
+                <search>
+                    <query>index=firemon_policy sourcetype=firewall_policy_analysis</query>
+                </search>
+            </chart>
+        </panel>
+        <panel>
+            <title>Risk & Compliance Overview</title>
+            <chart>
+                <search>
+                    <query>index=firemon_risk sourcetype=compliance_summary OR sourcetype=risk_exposure_overview</query>
+                </search>
+            </chart>
+        </panel>
+    </row>
+    <row>
+        <panel>
+            <title>Firemon Objects</title>
+            <table>
+                <search>
+                    <query>index=firemon_objects sourcetype=services OR sourcetype=zones OR sourcetype=network_segments</query>
+                </search>
+            </table>
+        </panel>
+        <panel>
+            <title>Scheduled Reports</title>
+            <table>
+                <search>
+                    <query>index=firemon_reports sourcetype=scheduled_reports OR sourcetype=report_templates</query>
+                </search>
+            </table>
+        </panel>
+    </row>
+    <row>
+        <panel>
+            <image>
+                <url>/app/Firemon_Splunk_App/appserver/static/appLogo.png</url>
+                <alt>Firemon Logo</alt>
+            </image>
+        </panel>
+    </row>
+</dashboard>
