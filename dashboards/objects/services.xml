@@ -1,4 +1,4 @@
-<dashboard>
+<dashboard version="1.1">
 <label>Services Overview</label>
 <description>Displays all FireMon services with API-driven data.</description>
 <row>
