@@ -1,48 +1,44 @@
-<dashboard version="1.1">
+<dashboard>
 <label>Services Overview</label>
-<description>Overview of all FireMon services with status and metrics.</description>
-
-<!-- FireMon Branding -->
-<fieldset>
-<html>
-<![CDATA[
-<div style="text-align:right;">
-<img src="/static/appLogo.png" alt="FireMon Logo" width="160" height="40">
-</div>
-]]>
-</html>
-</fieldset>
-
-<!-- Panels -->
+<description>Displays all FireMon services with API-driven data.</description>
 <row>
 <panel>
-<title>Service Status</title>
 <chart>
+<title>Service Summary</title>
 <search>
-<query>index=firemon sourcetype=firemon_service_status | stats count by status</query>
+<query>
+index=firemon sourcetype=firemon:services
+| stats count by service_name, service_group
+</query>
 </search>
-<option name="charting.chart">pie</option>
+<option name="charting.chart">bar</option>
+<option name="charting.legend.placement">right</option>
 </chart>
 </panel>
-
+</row>
+<row>
 <panel>
-<title>Top Active Services</title>
 <table>
+<title>All Services</title>
 <search>
-<query>index=firemon sourcetype=firemon_services | top service_name limit=10</query>
+<query>
+index=firemon sourcetype=firemon:services
+| table service_name, service_group, description, status
+</query>
 </search>
 </table>
 </panel>
 </row>
-
 <row>
 <panel>
-<title>Service Alerts</title>
-<table>
-<search>
-<query>index=firemon sourcetype=firemon_service_alerts | table _time, service_name, severity, message</query>
-</search>
-</table>
+<!-- FireMon branding logo on far right -->
+<html>
+<![CDATA[
+<div style="text-align:right;">
+<img src="/static/appLogo.png" alt="FireMon Logo" width="160" height="40"/>
+</div>
+]]>
+</html>
 </panel>
 </row>
 </dashboard>
