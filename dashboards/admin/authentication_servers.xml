@@ -1,0 +1,62 @@
+<dashboard version="1.1">
+<label>Authentication Servers</label>
+<description>Displays configured authentication servers and their status across FireMon deployment.</description>
+
+<row>
+<panel>
+<title>Total Authentication Servers</title>
+<single>
+<search>
+<query>
+index=firemon sourcetype=firemon:auth_servers
+| stats dc(server_id) AS total_servers
+</query>
+</search>
+<option name="unit">servers</option>
+</single>
+</panel>
+<panel>
+<title>Failed Authentication Servers</title>
+<single>
+<search>
+<query>
+index=firemon sourcetype=firemon:auth_servers status=failed
+| stats count AS failed_servers
+</query>
+</search>
+<option name="unit">servers</option>
+</single>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Authentication Server Status Table</title>
+<table>
+<search>
+<query>
+index=firemon sourcetype=firemon:auth_servers
+| table server_name, server_type, status, last_checked, error_message
+| sort server_name
+</query>
+</search>
+<option name="count">10</option>
+<option name="drilldown">none</option>
+</table>
+</panel>
+</row>
+
+<row>
+<panel>
+<title>Authentication Server Status Breakdown</title>
+<pie>
+<search>
+<query>
+index=firemon sourcetype=firemon:auth_servers
+| stats count by status
+</query>
+</search>
+</pie>
+</panel>
+</row>
+</dashboard>
