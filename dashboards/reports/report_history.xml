@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dashboard version="1.1">
+    <label>Report History</label>
+    <description>View historical report execution and delivery logs</description>
+    
+    <row>
+        <panel>
+            <title>Total Reports Generated</title>
+            <single>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_history | stats count</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="colorMode">block</option>
+                <option name="drilldown">none</option>
+                <option name="rangeColors">["#65a637","#65a637"]</option>
+                <option name="useColors">1</option>
+            </single>
+        </panel>
+        <panel>
+            <title>Successful Deliveries</title>
+            <single>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_history delivery_status="delivered" | stats count</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="colorMode">block</option>
+                <option name="drilldown">none</option>
+                <option name="rangeColors">["#006d9c","#006d9c"]</option>
+                <option name="useColors">1</option>
+            </single>
+        </panel>
+        <panel>
+            <title>Failed Deliveries</title>
+            <single>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_history delivery_status="failed" | stats count</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="colorMode">block</option>
+                <option name="drilldown">none</option>
+                <option name="rangeColors">["#65a637","#f8be34","#dc4e41"]</option>
+                <option name="rangeValues">[0,10]</option>
+                <option name="useColors">1</option>
+            </single>
+        </panel>
+        <panel>
+            <title>Avg Generation Time</title>
+            <single>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_history | stats avg(generation_time) as avg_time | eval avg_time=round(avg_time,1)." sec"</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="colorMode">block</option>
+                <option name="drilldown">none</option>
+                <option name="rangeColors">["#5a4575","#5a4575"]</option>
+                <option name="useColors">1</option>
+            </single>
+        </panel>
+    </row>
+    
+    <row>
+        <panel>
+            <title>Report Execution History</title>
+            <table>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_history 
+| table _time, report_id, report_name, template_name, execution_status, delivery_status, generation_time, file_size, recipients, generated_by 
+| sort -_time</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="drilldown">cell</option>
+                <option name="count">20</option>
+                <option name="refresh.display">progressbar</option>
+                <format type="color" field="execution_status">
+                    <colorPalette type="map">{"completed":#65a637,"failed":#dc4e41,"cancelled":#999999}</colorPalette>
+                </format>
+                <format type="color" field="delivery_status">
+                    <colorPalette type="map">{"delivered":#65a637,"failed":#dc4e41,"pending":#f8be34}</colorPalette>
+                </format>
+            </table>
+        </panel>
+    </row>
+    
+    <row>
+        <panel>
+            <title>Report Generation Over Time</title>
+            <chart>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_history 
+| timechart count by execution_status</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="charting.chart">area</option>
+                <option name="charting.chart.stackMode">stacked</option>
+                <option name="charting.drilldown">none</option>
+                <option name="charting.legend.placement">bottom</option>
+            </chart>
+        </panel>
+    </row>
+    
+    <row>
+        <panel>
+            <title>Reports by Template</title>
+            <chart>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_history 
+| stats count by template_name 
+| sort -count 
+| head 10</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="charting.chart">bar</option>
+                <option name="charting.drilldown">none</option>
+                <option name="charting.legend.placement">none</option>
+            </chart>
+        </panel>
+        <panel>
+            <title>Delivery Method Distribution</title>
+            <chart>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_history 
+| stats count by delivery_method</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="charting.chart">pie</option>
+                <option name="charting.drilldown">none</option>
+            </chart>
+        </panel>
+    </row>
+    
+    <row>
+        <panel>
+            <title>Generation Time Trend</title>
+            <chart>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_history 
+| timechart avg(generation_time) as "Avg Generation Time (sec)"</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="charting.chart">line</option>
+                <option name="charting.drilldown">none</option>
+            </chart>
+        </panel>
+        <panel>
+            <title>Report Size Distribution</title>
+            <chart>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_history 
+| eval size_category=case(file_size&lt;1024,"&lt;1KB",file_size&lt;102400,"1KB-100KB",file_size&lt;1048576,"100KB-1MB",1=1,"&gt;1MB") 
+| stats count by size_category</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="charting.chart">pie</option>
+                <option name="charting.drilldown">none</option>
+            </chart>
+        </panel>
+    </row>
+    
+    <row>
+        <panel>
+            <title>Top Report Generators</title>
+            <table>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_history 
+| stats count as reports_generated, avg(generation_time) as avg_time by generated_by 
+| eval avg_time=round(avg_time,1) 
+| sort -reports_generated 
+| head 10</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="drilldown">none</option>
+                <option name="count">10</option>
+            </table>
+        </panel>
+        <panel>
+            <title>Recent Delivery Failures</title>
+            <table>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_history delivery_status="failed" 
+| table _time, report_name, delivery_method, error_message, recipients 
+| sort -_time 
+| head 10</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="drilldown">none</option>
+                <option name="count">10</option>
+            </table>
+        </panel>
+    </row>
+</dashboard>
