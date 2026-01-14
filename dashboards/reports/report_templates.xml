@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dashboard version="1.1">
+    <label>Report Templates</label>
+    <description>Browse and manage available report templates</description>
+    
+    <row>
+        <panel>
+            <title>Total Templates</title>
+            <single>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_templates | stats dc(template_id) as total</query>
+                    <earliest>-24h@h</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="colorMode">block</option>
+                <option name="drilldown">none</option>
+                <option name="rangeColors">["#65a637","#65a637"]</option>
+                <option name="useColors">1</option>
+            </single>
+        </panel>
+        <panel>
+            <title>Active Templates</title>
+            <single>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_templates status="active" | stats dc(template_id) as count</query>
+                    <earliest>-24h@h</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="colorMode">block</option>
+                <option name="drilldown">none</option>
+                <option name="rangeColors">["#006d9c","#006d9c"]</option>
+                <option name="useColors">1</option>
+            </single>
+        </panel>
+        <panel>
+            <title>Custom Templates</title>
+            <single>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_templates type="custom" | stats dc(template_id) as count</query>
+                    <earliest>-24h@h</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="colorMode">block</option>
+                <option name="drilldown">none</option>
+                <option name="rangeColors">["#5a4575","#5a4575"]</option>
+                <option name="useColors">1</option>
+            </single>
+        </panel>
+        <panel>
+            <title>Most Used Template</title>
+            <single>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_templates | stats sum(usage_count) as uses by template_name | sort -uses | head 1 | fields template_name</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="colorMode">block</option>
+                <option name="drilldown">none</option>
+                <option name="rangeColors">["#f8be34","#f8be34"]</option>
+                <option name="useColors">1</option>
+            </single>
+        </panel>
+    </row>
+    
+    <row>
+        <panel>
+            <title>Report Templates Catalog</title>
+            <table>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_templates 
+| dedup template_id 
+| table template_id, template_name, category, type, status, created_by, created_date, usage_count 
+| sort -usage_count</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="drilldown">cell</option>
+                <option name="count">20</option>
+                <option name="refresh.display">progressbar</option>
+                <format type="color" field="status">
+                    <colorPalette type="map">{"active":#65a637,"inactive":#999999,"draft":#f8be34}</colorPalette>
+                </format>
+                <format type="color" field="type">
+                    <colorPalette type="map">{"built-in":#006d9c,"custom":#5a4575}</colorPalette>
+                </format>
+            </table>
+        </panel>
+    </row>
+    
+    <row>
+        <panel>
+            <title>Templates by Category</title>
+            <chart>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_templates 
+| dedup template_id 
+| stats count by category</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="charting.chart">pie</option>
+                <option name="charting.drilldown">none</option>
+            </chart>
+        </panel>
+        <panel>
+            <title>Templates by Type</title>
+            <chart>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_templates 
+| dedup template_id 
+| stats count by type</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="charting.chart">pie</option>
+                <option name="charting.drilldown">none</option>
+            </chart>
+        </panel>
+    </row>
+    
+    <row>
+        <panel>
+            <title>Template Usage Over Time</title>
+            <chart>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_execution 
+| timechart count by template_name limit=10</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="charting.chart">line</option>
+                <option name="charting.drilldown">none</option>
+                <option name="charting.legend.placement">bottom</option>
+            </chart>
+        </panel>
+    </row>
+    
+    <row>
+        <panel>
+            <title>Top 10 Most Used Templates</title>
+            <chart>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_templates 
+| dedup template_id 
+| stats sum(usage_count) as uses by template_name 
+| sort -uses 
+| head 10</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="charting.chart">bar</option>
+                <option name="charting.drilldown">none</option>
+                <option name="charting.legend.placement">none</option>
+            </chart>
+        </panel>
+        <panel>
+            <title>Recently Created Templates</title>
+            <table>
+                <search>
+                    <query>index=firemon_reports sourcetype=report_templates 
+| dedup template_id 
+| table created_date, template_name, category, created_by, status 
+| sort -created_date 
+| head 10</query>
+                    <earliest>-30d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="drilldown">none</option>
+                <option name="count">10</option>
+                <format type="color" field="status">
+                    <colorPalette type="map">{"active":#65a637,"inactive":#999999,"draft":#f8be34}</colorPalette>
+                </format>
+            </table>
+        </panel>
+    </row>
+</dashboard>
