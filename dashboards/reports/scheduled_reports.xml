@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dashboard version="1.1">
+    <label>Scheduled Reports</label>
+    <description>Manage and monitor scheduled report execution</description>
+    
+    <row>
+        <panel>
+            <title>Total Scheduled Reports</title>
+            <single>
+                <search>
+                    <query>index=firemon_reports sourcetype=scheduled_reports | stats dc(report_id) as total</query>
+                    <earliest>-24h@h</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="colorMode">block</option>
+                <option name="drilldown">none</option>
+                <option name="rangeColors">["#65a637","#65a637"]</option>
+                <option name="useColors">1</option>
+            </single>
+        </panel>
+        <panel>
+            <title>Reports Running Today</title>
+            <single>
+                <search>
+                    <query>index=firemon_reports sourcetype=scheduled_reports status="running" OR status="pending" | stats count</query>
+                    <earliest>@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="colorMode">block</option>
+                <option name="drilldown">none</option>
+                <option name="rangeColors">["#006d9c","#006d9c"]</option>
+                <option name="useColors">1</option>
+            </single>
+        </panel>
+        <panel>
+            <title>Failed Executions (24h)</title>
+            <single>
+                <search>
+                    <query>index=firemon_reports sourcetype=scheduled_reports status="failed" | stats count</query>
+                    <earliest>-24h@h</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="colorMode">block</option>
+                <option name="drilldown">none</option>
+                <option name="rangeColors">["#65a637","#f8be34","#dc4e41"]</option>
+                <option name="rangeValues">[0,5]</option>
+                <option name="useColors">1</option>
+            </single>
+        </panel>
+        <panel>
+            <title>Avg Execution Time</title>
+            <single>
+                <search>
+                    <query>index=firemon_reports sourcetype=scheduled_reports | stats avg(duration_seconds) as avg_duration | eval avg_duration=round(avg_duration,1)." sec"</query>
+                    <earliest>-7d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="colorMode">block</option>
+                <option name="drilldown">none</option>
+                <option name="rangeColors">["#5a4575","#5a4575"]</option>
+                <option name="useColors">1</option>
+            </single>
+        </panel>
+    </row>
+    
+    <row>
+        <panel>
+            <title>Scheduled Reports List</title>
+            <table>
+                <search>
+                    <query>index=firemon_reports sourcetype=scheduled_reports 
+| dedup report_id 
+| table report_id, report_name, schedule, next_run, last_run, last_status, owner, recipients 
+| sort next_run</query>
+                    <earliest>-7d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="drilldown">cell</option>
+                <option name="count">20</option>
+                <option name="refresh.display">progressbar</option>
+                <format type="color" field="last_status">
+                    <colorPalette type="map">{"completed":#65a637,"running":#006d9c,"failed":#dc4e41,"pending":#f8be34}</colorPalette>
+                </format>
+            </table>
+        </panel>
+    </row>
+    
+    <row>
+        <panel>
+            <title>Reports by Schedule Frequency</title>
+            <chart>
+                <search>
+                    <query>index=firemon_reports sourcetype=scheduled_reports 
+| dedup report_id 
+| stats count by schedule</query>
+                    <earliest>-7d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="charting.chart">pie</option>
+                <option name="charting.drilldown">none</option>
+            </chart>
+        </panel>
+        <panel>
+            <title>Reports by Owner</title>
+            <chart>
+                <search>
+                    <query>index=firemon_reports sourcetype=scheduled_reports 
+| dedup report_id 
+| stats count by owner</query>
+                    <earliest>-7d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="charting.chart">pie</option>
+                <option name="charting.drilldown">none</option>
+            </chart>
+        </panel>
+    </row>
+    
+    <row>
+        <panel>
+            <title>Report Execution Timeline</title>
+            <chart>
+                <search>
+                    <query>index=firemon_reports sourcetype=scheduled_reports 
+| timechart count by last_status</query>
+                    <earliest>-7d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="charting.chart">column</option>
+                <option name="charting.chart.stackMode">stacked</option>
+                <option name="charting.drilldown">none</option>
+                <option name="charting.legend.placement">bottom</option>
+            </chart>
+        </panel>
+    </row>
+    
+    <row>
+        <panel>
+            <title>Upcoming Scheduled Reports (Next 24h)</title>
+            <table>
+                <search>
+                    <query>index=firemon_reports sourcetype=scheduled_reports 
+| dedup report_id 
+| where next_run &lt; relative_time(now(), "+24h") 
+| table next_run, report_name, schedule, owner 
+| sort next_run</query>
+                    <earliest>-7d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="drilldown">none</option>
+                <option name="count">10</option>
+            </table>
+        </panel>
+        <panel>
+            <title>Recent Failed Reports</title>
+            <table>
+                <search>
+                    <query>index=firemon_reports sourcetype=scheduled_reports status="failed" 
+| table _time, report_name, error_message, owner 
+| head 10</query>
+                    <earliest>-7d@d</earliest>
+                    <latest>now</latest>
+                </search>
+                <option name="drilldown">none</option>
+                <option name="count">10</option>
+            </table>
+        </panel>
+    </row>
+</dashboard>
